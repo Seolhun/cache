@@ -1,0 +1,62 @@
+{
+  "name": "cache",
+  "version": "1.0.0",
+  "description": "To store key value data",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "scripts": {
+    "prebuild": "rm -rf ./dist",
+    "build": "npm run build:esm && npm run build:cjs",
+    "build:cjs": "ncc build src/index.ts -o dist -m -e react",
+    "build:esm": "tsc --target ESNext --module ES6 --outDir dist",
+    "test": "jest",
+    "test:c": "jest --coverage",
+    "prettier": "prettier --write '**/*.{ts,tsx,js,jsx}'",
+    "predeploy": "npm run build",
+    "deploy": "npm publish",
+    "version:prod": "npm version patch --from-git -m",
+    "version:dev": "npm version prerelease --preid=beta --from-git",
+    "version:test": "npm version prerelease --preid=alpha --from-git",
+    "watch": "tsc --watch",
+    "types:check": "tsc --noEmit",
+    "format": "prettier --write \"{src,test,examples}/**/*.{ts,tsx}\"",
+    "lint": "eslint \"{src,__test__,examples}/**/*.{ts,tsx}\"",
+    "lint:fix": "eslint \"{src,__test__,examples}/**/*.{ts,tsx}\" --fix"
+  },
+  "files": [
+    "dist/**",
+    "esm/**"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Seolhun/cache.git"
+  },
+  "keywords": [
+    "cache",
+    "typescript",
+    "key",
+    "value"
+  ],
+  "author": "Seolhun",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Seolhun/cache/issues"
+  },
+  "homepage": "https://github.com/Seolhun/cache#readme",
+  "devDependencies": {
+    "@testing-library/react": "^10.0.4",
+    "@types/jest": "^25.2.3",
+    "@types/node": "^14.0.5",
+    "@typescript-eslint/eslint-plugin": "^3.0.0",
+    "@typescript-eslint/parser": "^3.0.0",
+    "eslint": "^7.0.0",
+    "eslint-config-prettier": "^6.11.0",
+    "prettier": "^2.0.5",
+    "ts-jest": "^26.0.0",
+    "typescript": "^3.9.3"
+  }
+}
