@@ -1,5 +1,32 @@
-{
-  "language": "node_js",
-  "node_js": "node",
-  "script": "npm run types:check && npm run lint && npm test",
-}
+language: node_js
+
+node_js:
+  - "12"
+  - "11"
+  - "10"
+  - "9"
+  - "8"
+
+stages:
+  - Tests
+  - Builds
+
+jobs:
+  include:
+    - stage: Tests
+      name: Unit Test
+      script:
+        - npm run lint
+        - npm run test:type
+        - npm run test
+
+    - stage: Builds
+      script:
+        - npm run build
+
+notifications:
+  email:
+    - shun10116@gmail.com
+  slack:
+    rooms:
+      - hi-cordworkspace:EC6Q4SIRTddzUEE0rMDXrSl6#dev-travis
