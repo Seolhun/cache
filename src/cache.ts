@@ -1,4 +1,4 @@
-import { CacheInterface, keyInterface, cacheListener } from "./types";
+import { CacheInterface, keyInterface, cacheListener } from './types';
 
 export default class Cache implements CacheInterface {
   private __cache: Map<string, any>;
@@ -52,12 +52,12 @@ export default class Cache implements CacheInterface {
   // TODO: introduce namespace for the cache
   serializeKey(key: keyInterface): [string, any, string] {
     let args = null;
-    if (typeof key === "function") {
+    if (typeof key === 'function') {
       try {
         key = key();
       } catch (err) {
         // dependencies not ready
-        key = "";
+        key = '';
       }
     }
 
@@ -67,17 +67,17 @@ export default class Cache implements CacheInterface {
       key = hash(key);
     } else {
       // convert null to ''
-      key = String(key || "");
+      key = String(key || '');
     }
 
-    const errorKey = key ? "err@" + key : "";
+    const errorKey = key ? 'err@' + key : '';
 
     return [key, args, errorKey];
   }
 
   subscribe(listener: cacheListener) {
-    if (typeof listener !== "function") {
-      throw new Error("Expected the listener to be a function.");
+    if (typeof listener !== 'function') {
+      throw new Error('Expected the listener to be a function.');
     }
 
     let isSubscribed = true;

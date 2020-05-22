@@ -1,4 +1,18 @@
 {
+  "env": {
+    "es6": true,
+    "browser": true,
+    "node": true,
+    "jest": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier",
+    "prettier/@typescript-eslint"
+  ],
+  "plugins": ["@typescript-eslint"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": 8,
@@ -8,20 +22,6 @@
       "experimentalObjectRestSpread": true
     },
     "allowImportExportEverywhere": true
-  },
-  "plugins": ["@typescript-eslint"],
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended",
-    "prettier",
-    "prettier/@typescript-eslint"
-  ],
-  "env": {
-    "es6": true,
-    "browser": true,
-    "node": true,
-    "jest": true
   },
   "rules": {
     "func-names": ["error", "as-needed"],
