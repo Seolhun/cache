@@ -46,7 +46,6 @@
   },
   "homepage": "https://github.com/Seolhun/cache#readme",
   "devDependencies": {
-    "@testing-library/react": "^10.0.4",
     "@types/jest": "^25.2.3",
     "@types/node": "^14.0.5",
     "@typescript-eslint/eslint-plugin": "^3.0.0",
