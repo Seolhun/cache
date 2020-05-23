@@ -1,0 +1,6 @@
+const MUTATION_TS = {};
+const CACHE_REVALIDATORS = {};
+
+export { MUTATION_TS, CACHE_REVALIDATORS };
+
+export default { MUTATION_TS, CACHE_REVALIDATORS };
