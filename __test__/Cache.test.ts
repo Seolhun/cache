@@ -1,8 +1,29 @@
+import Cache from '../src/Cache';
 import cache from '../examples/Cache.Example';
 
 describe('Cache Test', () => {
   beforeEach(() => {
     cache.clear();
+	});
+
+	it('comparator', () => {
+		const comparator = (key, prevValue, nextValue) => {
+			if (key === 'foo') {
+				const hit = prevValue !== 4 && prevValue !== nextValue;
+				return hit;
+			}
+			return true;
+		}
+		const initialData = { foo: 3 };
+		const tempCache = new Cache<any>({ initialData ,comparator });
+		tempCache.set('user', { name: 'seolhun' });
+		tempCache.set('foo', 4);
+		expect(tempCache.get('user')).toEqual({ name: 'seolhun' });
+		expect(tempCache.get('foo')).toEqual(4);
+		tempCache.set('user', { name: 'seolhun' });
+		tempCache.set('foo', 5);
+		expect(tempCache.get('user')).toEqual({ name: 'seolhun' });
+		expect(tempCache.get('foo')).toEqual(4);
   });
 
   it('subscribe: listener is not a function', () => {
@@ -27,7 +48,7 @@ describe('Cache Test', () => {
     expect(subscribeOutput).toEqual(2);
     cache.clear();
     expect(subscribeOutput).toEqual(3);
-  });
+	});
 
   it('clear', () => {
     cache.set('user', {

@@ -2,6 +2,8 @@ export type cacheListener = () => void;
 
 export type serializeKeys<T> = [keyof T, string];
 
+export type comparator<T> = (key: keyof T, prevValue?: T[keyof T], nextValue?: T[keyof T]) => boolean;
+
 export interface CacheInterface<T> {
   subscribe(listener: cacheListener): () => void;
   clear(): void;
@@ -20,3 +22,9 @@ export type mutateInterface<Data> = (
   data?: Data | Promise<Data> | mutateCallback<Data>,
   shouldRevalidate?: boolean,
 ) => Promise<Data | undefined>;
+
+export interface CacheConstructorInterface<T> {
+	initialData?: T,
+	listeners?: ((...args: any[]) => void)[];
+	comparator?: comparator<T>
+}

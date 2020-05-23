@@ -1,12 +1,20 @@
-import { CacheInterface, cacheListener, serializeKeys } from './types';
+import {
+	CacheInterface,
+	CacheConstructorInterface,
+	cacheListener,
+	serializeKeys,
+	comparator,
+} from './types';
 
 export default class Cache<T> implements CacheInterface<T> {
   private __cache: Map<string, T[keyof T]>;
-  private __listeners: cacheListener[];
+	private __listeners: cacheListener[];
+	private __comparator: comparator<T>;
 
-  constructor(initialData?: T) {
-    this.__cache = new Map(Object.entries<T[keyof T]>(initialData || {}));
-    this.__listeners = [];
+  constructor(props: CacheConstructorInterface<T> = {}) {
+    this.__cache = new Map(Object.entries<T[keyof T]>(props.initialData || {}));
+		this.__listeners = props.listeners ? props.listeners : [];
+		this.__comparator = props.comparator ? props.comparator : () => true;
   }
 
   private async notify() {
@@ -48,9 +56,13 @@ export default class Cache<T> implements CacheInterface<T> {
   }
 
   set(key: keyof T, value: T[keyof T]): any {
-    const [serializedKey] = this.serializeKey(key);
-    this.__cache.set(serializedKey as string, value);
-    this.notify();
+		const [serializedKey] = this.serializeKey(key);
+		const prevValue = this.__cache.get(serializedKey as string);
+		const nextValue = value;
+		if (this.__comparator(key, prevValue, nextValue)) {
+			this.__cache.set(serializedKey as string, value);
+			this.notify();
+		}
     return this;
   }
 
