@@ -1,78 +1,56 @@
-import { CacheInterface, keyInterface, cacheListener } from './types';
+import { CacheInterface, cacheListener, serializeKeys } from './types';
 
-export default class Cache implements CacheInterface {
-  private __cache: Map<string, any>;
+export default class Cache<T> implements CacheInterface<T> {
+  private __cache: Map<string, T[keyof T]>;
   private __listeners: cacheListener[];
 
-  constructor(initialData: any = {}) {
-    this.__cache = new Map(Object.entries(initialData));
+  constructor(initialData?: T) {
+    this.__cache = new Map(Object.entries<T[keyof T]>(initialData || {}));
     this.__listeners = [];
   }
 
-  get(key: keyInterface): any {
-    const [_key] = this.serializeKey(key);
-    return this.__cache.get(_key);
+  private async notify() {
+    await Promise.all(this.__listeners.map(async (listener) => await listener()));
   }
 
-  set(key: keyInterface, value: any, shouldNotify = true): any {
-    const [_key] = this.serializeKey(key);
-    this.__cache.set(_key, value);
-    if (shouldNotify) {
-      mutate(key, value, false);
+  get(key: keyof T) {
+    const [serializedKey] = this.serializeKey(key);
+    const hitData = this.__cache.get(serializedKey as string);
+    if (!hitData) {
+      return null;
     }
+    return hitData;
+  }
+
+  set(key: keyof T, value: T[keyof T]): any {
+    const [serializedKey] = this.serializeKey(key);
+    this.__cache.set(serializedKey as string, value);
     this.notify();
   }
 
   keys() {
-    return Array.from(this.__cache.keys());
+    return Array.from(this.__cache.keys()) as (keyof T)[];
   }
 
-  has(key: keyInterface) {
-    const [_key] = this.serializeKey(key);
-    return this.__cache.has(_key);
+  has(key: keyof T) {
+    const [serializedKey] = this.serializeKey(key);
+    return this.__cache.has(serializedKey as string);
   }
 
-  clear(shouldNotify = true) {
-    if (shouldNotify) {
-      this.__cache.forEach((key) => mutate(key, null, false));
-    }
+  clear() {
     this.__cache.clear();
     this.notify();
   }
 
-  delete(key: keyInterface, shouldNotify = true) {
-    const [_key] = this.serializeKey(key);
-    if (shouldNotify) {
-      mutate(key, null, false);
-    }
-    this.__cache.delete(_key);
+  delete(key: keyof T) {
+    const [serializedKey] = this.serializeKey(key);
+    this.__cache.delete(serializedKey as string);
     this.notify();
   }
 
-  // TODO: introduce namespace for the cache
-  serializeKey(key: keyInterface): [string, any, string] {
-    let args = null;
-    if (typeof key === 'function') {
-      try {
-        key = key();
-      } catch (err) {
-        // dependencies not ready
-        key = '';
-      }
-    }
-
-    if (Array.isArray(key)) {
-      // args array
-      args = key;
-      key = hash(key);
-    } else {
-      // convert null to ''
-      key = String(key || '');
-    }
-
+  serializeKey(key: keyof T): serializeKeys<T> {
     const errorKey = key ? 'err@' + key : '';
-
-    return [key, args, errorKey];
+    return [key, errorKey];
   }
 
   subscribe(listener: cacheListener) {
@@ -94,12 +72,5 @@ export default class Cache implements CacheInterface {
         this.__listeners.length--;
       }
     };
-  }
-
-  // Notify Cache subscribers about a change in the cache
-  private notify() {
-    for (let listener of this.__listeners) {
-      listener();
-    }
   }
 }
