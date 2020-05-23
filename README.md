@@ -8,6 +8,18 @@ To store key value as Cache
 
 Node > 10.0
 
+## Install
+
+```bash
+npm install @seolhun/cache
+```
+
+```ts
+import Cache from '@seolhun/cache';
+```
+
+## Configuration props
+
 ```ts
 export interface CacheInterface<T> {
   subscribe(listener: cacheListener): () => void;
