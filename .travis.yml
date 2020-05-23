@@ -8,15 +8,21 @@ node_js:
   - "8"
 
 stages:
+  - Install
   - Tests
   - Builds
 
 jobs:
   include:
+    - stage: Install
+      name: Package install
+      script:
+        - npm install
+
     - stage: Tests
       name: Unit Test
       script:
-        // - npm run lint
+        - npm run lint
         - npm run test:type
         - npm run test
 

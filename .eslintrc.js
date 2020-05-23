@@ -3,21 +3,16 @@ module.exports = {
     jest: true,
     browser: true,
   },
-  extends: ['airbnb-typescript', 'plugin:@typescript-eslint/eslint-recommended'],
-  plugins: ['@typescript-eslint', 'eslint-plugin', 'jest'],
+  extends: ['plugin:@typescript-eslint/eslint-recommended'],
+  plugins: ['@typescript-eslint'],
   parser: '@typescript-eslint/parser',
-  settings: {
-    'prettier/prettier': 'error',
-    'import/parsers': {
-      '@typescript-eslint/parser': ['.ts', '.tsx'],
+  parserOptions: {
+    ecmaVersion: 8,
+    sourceType: 'module',
+    ecmaFeatures: {
+      impliedStrict: true,
+      experimentalObjectRestSpread: true,
     },
-    'import/resolver': {
-      typescript: {
-        alwaysTryTypes: true,
-      },
-      node: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx'],
-      },
-    },
+    allowImportExportEverywhere: true,
   },
 };
