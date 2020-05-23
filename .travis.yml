@@ -16,7 +16,7 @@ jobs:
     - stage: Tests
       name: Unit Test
       script:
-        - npm run lint
+        // - npm run lint
         - npm run test:type
         - npm run test
 
