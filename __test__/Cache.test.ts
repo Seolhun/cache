@@ -1,23 +1,87 @@
-import cache from '../examples/cache';
+import cache from '../examples/Cache.Example';
 
 describe('Cache Test', () => {
-  it('keys: default', () => {
-    expect(cache.keys()).toEqual([]);
+  beforeEach(() => {
+    cache.clear();
   });
 
-  it('set - get: default', () => {
+  it('subscribe: listener is not a function', () => {
+    try {
+      // @ts-ignore
+      cache.subscribe(null);
+    } catch (error) {
+      expect(error.message).toEqual('Expected the listener to be a function.');
+    }
+  });
+
+  it('notify: after set subscribe, log test', () => {
+    let subscribeOutput = 0;
+    const subscribe = () => subscribeOutput++;
+    cache.subscribe(subscribe);
     cache.set('user', {
-      id: '100',
+      id: '1',
       name: 'hun',
     });
-    expect(cache.get('user')).toEqual({ id: '100', name: 'hun' });
+    expect(subscribeOutput).toEqual(1);
+    cache.delete('user');
+    expect(subscribeOutput).toEqual(2);
+    cache.clear();
+    expect(subscribeOutput).toEqual(3);
   });
 
-  it('keys: after set', () => {
+  it('clear', () => {
     cache.set('user', {
-      id: '100',
+      id: '1',
+      name: 'hun',
+    });
+    expect(cache.clear().keys()).toEqual([]);
+  });
+
+  it('delete', () => {
+    cache.set('user', {
+      id: '1',
+      name: 'hun',
+    });
+    cache.set('users', []);
+    expect(cache.delete('user').keys()).toEqual(['users']);
+  });
+
+  it('set - get', () => {
+    cache.set('user', {
+      id: '1',
+      name: 'hun',
+    });
+		expect(cache.get('user')).toEqual({ id: '1', name: 'hun' });
+	});
+
+	it('get: No cache key', () => {
+		// @ts-ignore
+		expect(cache.get('foo')).toEqual({ foo: 'error@foo' });
+  });
+
+  it('keys', () => {
+    expect(cache.keys()).toEqual([]);
+    cache.set('user', {
+      id: '1',
       name: 'hun',
     });
     expect(cache.keys()).toEqual(['user']);
+	});
+
+	it('has', () => {
+    cache.set('user', {
+      id: '1',
+      name: 'hun',
+    });
+		expect(cache.has('user')).toEqual(true);
+		expect(cache.has('users')).toEqual(false);
+		// @ts-ignore
+		expect(cache.has('fdsa')).toEqual(false);
+	});
+
+	it('serializeKey', () => {
+		expect(cache.serializeKey('user')).toEqual(['user', 'error@user']);
+		// @ts-ignore
+		expect(cache.serializeKey('foo')).toEqual(['foo', 'error@foo']);
   });
 });

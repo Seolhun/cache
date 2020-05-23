@@ -3,14 +3,14 @@ export type cacheListener = () => void;
 export type serializeKeys<T> = [keyof T, string];
 
 export interface CacheInterface<T> {
-  keys(): (keyof T)[];
-  get(key: keyof T): T[keyof T] | null;
-  set(key: keyof T, value: T[keyof T]): any;
-  has(key: keyof T): boolean;
-  delete(key: keyof T): void;
-  clear(): void;
-  serializeKey(key: keyof T): serializeKeys<T>;
   subscribe(listener: cacheListener): () => void;
+  clear(): void;
+  delete(key: keyof T): void;
+  set(key: keyof T, value: T[keyof T]): any;
+  get(key: keyof T): T[keyof T] | {[key: string]: string;}
+  keys(): (keyof T)[];
+  has(key: keyof T): boolean;
+  serializeKey(key: keyof T): serializeKeys<T>;
 }
 
 type mutateCallback<Data> = (currentValue: Data) => Promise<Data> | Data;
