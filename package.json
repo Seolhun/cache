@@ -1,6 +1,8 @@
 {
   "name": "cache",
   "version": "1.0.0",
+  "author": "Seolhun",
+  "license": "MIT",
   "description": "To store key value data",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -8,8 +10,8 @@
     "watch": "tsc --watch",
     "prebuild": "rm -rf ./dist",
     "build": "npm run build:esm && npm run build:cjs",
-    "build:cjs": "ncc build src/index.ts -o dist -m -e react",
-    "build:esm": "tsc --target ESNext --module ES6 --outDir dist",
+    "build:cjs": "tsc",
+    "build:esm": "tsc --target ESNext --module ES6 --outDir esm",
     "test": "jest",
     "test:type": "tsc --noEmit",
     "predeploy": "npm run build",
@@ -39,12 +41,17 @@
     "key",
     "value"
   ],
-  "author": "Seolhun",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/Seolhun/cache/issues"
   },
   "homepage": "https://github.com/Seolhun/cache#readme",
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "npm run lint:fix",
+      "npm run format",
+      "git add"
+    ]
+  },
   "devDependencies": {
     "@types/jest": "^25.2.3",
     "@types/node": "^14.0.5",
