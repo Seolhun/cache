@@ -1,15 +1,9 @@
-[![Build Status](https://travis-ci.com/Seolhun/cache.svg?branch=master)](https://travis-ci.com/Seolhun/cache)
+export type cacheListener = () => void;
 
-# Cache
+export type serializeKeys<T> = [keyof T, string];
 
-To store key value as Cache
+export type comparator<T> = (key: keyof T, prevValue?: T[keyof T], nextValue?: T[keyof T]) => boolean;
 
-## Requirement
-
-Node > 10.0
-
-
-```ts
 export interface CacheInterface<T> {
   subscribe(listener: cacheListener): () => void;
   clear(): void;
@@ -21,9 +15,16 @@ export interface CacheInterface<T> {
   serializeKey(key: keyof T): serializeKeys<T>;
 }
 
+type mutateCallback<Data> = (currentValue: Data) => Promise<Data> | Data;
+
+export type mutateInterface<Data> = (
+  key: keyof Data,
+  data?: Data | Promise<Data> | mutateCallback<Data>,
+  shouldRevalidate?: boolean,
+) => Promise<Data | undefined>;
+
 export interface CacheConstructorInterface<T> {
 	initialData?: T,
 	listeners?: ((...args: any[]) => void)[];
 	comparator?: comparator<T>
 }
-```
