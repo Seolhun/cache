@@ -14,6 +14,6 @@ module.exports = {
     '^.+\\.(ts|tsx)?$': 'ts-jest',
   },
   testPathIgnorePatterns: ['/node_modules/', '/.dist/'],
-  testMatch: ['<rootDir>/__test__/**/*.(test|spec).ts?(x)'],
+  testMatch: ['<rootDir>/test/**/*.(test|spec).ts?(x)'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
 };
