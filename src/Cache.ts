@@ -6,7 +6,7 @@ import {
   comparator,
 } from './types';
 
-export default class Cache<T> implements CacheInterface<T> {
+class Cache<T> implements CacheInterface<T> {
   private __cache: Map<string, T[keyof T]>;
   private __listeners: cacheListener[];
   private __comparator: comparator<T>;
@@ -92,3 +92,5 @@ export default class Cache<T> implements CacheInterface<T> {
     return [key, errorKey];
   }
 }
+
+export default Cache;
