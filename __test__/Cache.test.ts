@@ -4,26 +4,26 @@ import cache from '../examples/Cache.Example';
 describe('Cache Test', () => {
   beforeEach(() => {
     cache.clear();
-	});
+  });
 
-	it('comparator', () => {
-		const comparator = (key, prevValue, nextValue) => {
-			if (key === 'foo') {
-				const hit = prevValue !== 4 && prevValue !== nextValue;
-				return hit;
-			}
-			return true;
-		}
-		const initialData = { foo: 3 };
-		const tempCache = new Cache<any>({ initialData ,comparator });
-		tempCache.set('user', { name: 'seolhun' });
-		tempCache.set('foo', 4);
-		expect(tempCache.get('user')).toEqual({ name: 'seolhun' });
-		expect(tempCache.get('foo')).toEqual(4);
-		tempCache.set('user', { name: 'seolhun' });
-		tempCache.set('foo', 5);
-		expect(tempCache.get('user')).toEqual({ name: 'seolhun' });
-		expect(tempCache.get('foo')).toEqual(4);
+  it('comparator', () => {
+    const comparator = (key, prevValue, nextValue) => {
+      if (key === 'foo') {
+        const hit = prevValue !== 4 && prevValue !== nextValue;
+        return hit;
+      }
+      return true;
+    };
+    const initialData = { foo: 3 };
+    const tempCache = new Cache<any>({ initialData, comparator });
+    tempCache.set('user', { name: 'seolhun' });
+    tempCache.set('foo', 4);
+    expect(tempCache.get('user')).toEqual({ name: 'seolhun' });
+    expect(tempCache.get('foo')).toEqual(4);
+    tempCache.set('user', { name: 'seolhun' });
+    tempCache.set('foo', 5);
+    expect(tempCache.get('user')).toEqual({ name: 'seolhun' });
+    expect(tempCache.get('foo')).toEqual(4);
   });
 
   it('subscribe: listener is not a function', () => {
@@ -48,7 +48,7 @@ describe('Cache Test', () => {
     expect(subscribeOutput).toEqual(2);
     cache.clear();
     expect(subscribeOutput).toEqual(3);
-	});
+  });
 
   it('clear', () => {
     cache.set('user', {
@@ -72,12 +72,12 @@ describe('Cache Test', () => {
       id: '1',
       name: 'hun',
     });
-		expect(cache.get('user')).toEqual({ id: '1', name: 'hun' });
-	});
+    expect(cache.get('user')).toEqual({ id: '1', name: 'hun' });
+  });
 
-	it('get: No cache key', () => {
-		// @ts-ignore
-		expect(cache.get('foo')).toEqual({ foo: 'error@foo' });
+  it('get: No cache key', () => {
+    // @ts-ignore
+    expect(cache.get('foo')).toEqual({ foo: 'error@foo' });
   });
 
   it('keys', () => {
@@ -87,22 +87,22 @@ describe('Cache Test', () => {
       name: 'hun',
     });
     expect(cache.keys()).toEqual(['user']);
-	});
+  });
 
-	it('has', () => {
+  it('has', () => {
     cache.set('user', {
       id: '1',
       name: 'hun',
     });
-		expect(cache.has('user')).toEqual(true);
-		expect(cache.has('users')).toEqual(false);
-		// @ts-ignore
-		expect(cache.has('fdsa')).toEqual(false);
-	});
+    expect(cache.has('user')).toEqual(true);
+    expect(cache.has('users')).toEqual(false);
+    // @ts-ignore
+    expect(cache.has('fdsa')).toEqual(false);
+  });
 
-	it('serializeKey', () => {
-		expect(cache.serializeKey('user')).toEqual(['user', 'error@user']);
-		// @ts-ignore
-		expect(cache.serializeKey('foo')).toEqual(['foo', 'error@foo']);
+  it('serializeKey', () => {
+    expect(cache.serializeKey('user')).toEqual(['user', 'error@user']);
+    // @ts-ignore
+    expect(cache.serializeKey('foo')).toEqual(['foo', 'error@foo']);
   });
 });
