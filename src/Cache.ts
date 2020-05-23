@@ -13,6 +13,10 @@ export default class Cache<T> implements CacheInterface<T> {
     await Promise.all(this.__listeners.map(async (listener) => await listener()));
   }
 
+  keys() {
+    return Array.from(this.__cache.keys()) as (keyof T)[];
+  }
+
   get(key: keyof T) {
     const [serializedKey] = this.serializeKey(key);
     const hitData = this.__cache.get(serializedKey as string);
@@ -26,10 +30,6 @@ export default class Cache<T> implements CacheInterface<T> {
     const [serializedKey] = this.serializeKey(key);
     this.__cache.set(serializedKey as string, value);
     this.notify();
-  }
-
-  keys() {
-    return Array.from(this.__cache.keys()) as (keyof T)[];
   }
 
   has(key: keyof T) {

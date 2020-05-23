@@ -3,9 +3,9 @@ export type cacheListener = () => void;
 export type serializeKeys<T> = [keyof T, string];
 
 export interface CacheInterface<T> {
+  keys(): (keyof T)[];
   get(key: keyof T): T[keyof T] | null;
   set(key: keyof T, value: T[keyof T]): any;
-  keys(): (keyof T)[];
   has(key: keyof T): boolean;
   delete(key: keyof T): void;
   clear(): void;
