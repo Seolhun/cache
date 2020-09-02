@@ -1,9 +1,18 @@
 language: node_js
 
 node_js:
-  - '12'
-  - '11'
-  - '10'
+  - "10"
+  - "11"
+  - "12"
+
+branches:
+  only:
+    - master
+    - develop
+    - /^release/.*$/
+    - /^feature/.*$/
+    - /^hotfix/.*$/
+    - /^snyk-fix-*$/
 
 stages:
   - Install
