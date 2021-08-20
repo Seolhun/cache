@@ -34,7 +34,6 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          GENERATE_SOURCEMAP: "false"
           NODE_ENV: production
 
       - name: Slack Notification
