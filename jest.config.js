@@ -9,7 +9,6 @@ module.exports = {
       },
     },
   },
-  collectCoverageFrom: ['**/*.{js,jsx,ts,tsx}', '!**/*.d.ts', '!**/node_modules/**'],
   transform: {
     '^.+\\.(ts|tsx)?$': 'ts-jest',
   },
