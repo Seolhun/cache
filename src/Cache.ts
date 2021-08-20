@@ -7,18 +7,24 @@ import {
 } from './types';
 
 class Cache<T> implements CacheInterface<T> {
-  private __cache: Map<string, T[keyof T]>;
-  private __listeners: cacheListener[];
-  private __comparator: comparator<T>;
+  private _cache: Map<string, T[keyof T]>;
+  private _listeners: cacheListener[];
+  private _comparator: comparator<T>;
 
   constructor(props: CacheConstructorInterface<T> = {}) {
-    this.__cache = new Map(Object.entries<T[keyof T]>(props.initialData || {}));
-    this.__listeners = props.listeners ? props.listeners : [];
-    this.__comparator = props.comparator ? props.comparator : () => true;
+    this._cache = new Map(Object.entries<T[keyof T]>(props.initialData || {}));
+    this._listeners = props.listeners ? props.listeners : [];
+    this._comparator = props.comparator ? props.comparator : () => true;
   }
 
   private async notify() {
-    await Promise.all(this.__listeners.map(async (listener) => await listener()));
+    await Promise.all(this._listeners.map(async (listener) => await listener()));
+  }
+
+  serializeKey(key: keyof T): serializeKeys<T> {
+    const serializedKey = key;
+    const errorKey = serializedKey ? 'error@' + serializedKey : '';
+    return [serializedKey, errorKey];
   }
 
   subscribe(listener: cacheListener) {
@@ -27,40 +33,40 @@ class Cache<T> implements CacheInterface<T> {
     }
 
     let isSubscribed = true;
-    this.__listeners.push(listener);
+    this._listeners.push(listener);
 
     return () => {
       if (!isSubscribed) {
         return;
       }
       isSubscribed = false;
-      const index = this.__listeners.indexOf(listener);
+      const index = this._listeners.indexOf(listener);
       if (index > -1) {
-        this.__listeners[index] = this.__listeners[this.__listeners.length - 1];
-        this.__listeners.length--;
+        this._listeners[index] = this._listeners[this._listeners.length - 1];
+        this._listeners.length--;
       }
     };
   }
 
   clear() {
-    this.__cache.clear();
+    this._cache.clear();
     this.notify();
     return this;
   }
 
   delete(key: keyof T) {
     const [serializedKey] = this.serializeKey(key);
-    this.__cache.delete(serializedKey as string);
+    this._cache.delete(serializedKey as string);
     this.notify();
     return this;
   }
 
   set(key: keyof T, value: T[keyof T]): any {
     const [serializedKey] = this.serializeKey(key);
-    const prevValue = this.__cache.get(serializedKey as string);
+    const prevValue = this._cache.get(serializedKey as string);
     const nextValue = value;
-    if (this.__comparator(key, prevValue, nextValue)) {
-      this.__cache.set(serializedKey as string, value);
+    if (this._comparator(key, prevValue, nextValue)) {
+      this._cache.set(serializedKey as string, value);
       this.notify();
     }
     return this;
@@ -68,7 +74,7 @@ class Cache<T> implements CacheInterface<T> {
 
   get(key: keyof T) {
     const [serializedKey] = this.serializeKey(key);
-    const hitData = this.__cache.get(serializedKey as string);
+    const hitData = this._cache.get(serializedKey as string);
     if (!hitData) {
       const [serializedKey, errorKey] = this.serializeKey(key);
       return {
@@ -79,18 +85,14 @@ class Cache<T> implements CacheInterface<T> {
   }
 
   keys() {
-    return Array.from(this.__cache.keys()) as (keyof T)[];
+    return Array.from(this._cache.keys()) as (keyof T)[];
   }
 
   has(key: keyof T) {
     const [serializedKey] = this.serializeKey(key);
-    return this.__cache.has(serializedKey as string);
-  }
-
-  serializeKey(key: keyof T): serializeKeys<T> {
-    const errorKey = key ? 'error@' + key : '';
-    return [key, errorKey];
+    return this._cache.has(serializedKey as string);
   }
 }
 
+export { Cache };
 export default Cache;
