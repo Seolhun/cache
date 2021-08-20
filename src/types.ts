@@ -1,6 +1,6 @@
 export type cacheListener = () => void;
-
-export type serializeKeys<T> = [keyof T, string];
+export type serializeKey<T> = keyof T | string;
+export type serializeKeys<T> = [serializeKey<T>, string];
 
 export type comparator<T> = (
   key: keyof T,
@@ -18,14 +18,6 @@ export interface CacheInterface<T> {
   has(key: keyof T): boolean;
   serializeKey(key: keyof T): serializeKeys<T>;
 }
-
-type mutateCallback<Data> = (currentValue: Data) => Promise<Data> | Data;
-
-export type mutateInterface<Data> = (
-  key: keyof Data,
-  data?: Data | Promise<Data> | mutateCallback<Data>,
-  shouldRevalidate?: boolean,
-) => Promise<Data | undefined>;
 
 export interface CacheConstructorInterface<T> {
   initialData?: T;
