@@ -1,6 +1,6 @@
 {
   "name": "@seolhun/cache",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Seolhun",
   "license": "MIT",
   "description": "To store key value data",
