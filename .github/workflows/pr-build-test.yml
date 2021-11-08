@@ -1,17 +1,16 @@
-name: Github Build Test
+name: PR Build
 
 on:
   pull_request:
     branches: [master, develop, /^release/.*$/, /^feature/.*$/, /^hotfix/.*$/]
-    paths-ignore:
-      - '**/*.md'
+    types: [opened]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [12.x, 14.x, 16.x]
+        node-version: [14.x, 16.x]
 
     steps:
       - name: Checkout
@@ -35,9 +34,3 @@ jobs:
         run: npm run build
         env:
           NODE_ENV: production
-
-      - name: Slack Notification
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_CHANNEL: dev-travis
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
