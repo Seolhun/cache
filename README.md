@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/Seolhun/cache.svg?branch=master)](https://travis-ci.com/Seolhun/cache)
+![Github workflow](https://github.com/Seolhun/cache/actions/workflows/stage-build-test.yml/badge.svg)
 
 # Cache
 
