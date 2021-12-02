@@ -8,12 +8,12 @@ export type comparator<T> = (
   nextValue?: T[keyof T],
 ) => boolean;
 
-export interface CacheInterface<T> {
+export interface CacheInterface<T = Record<string, any>> {
   subscribe(listener: cacheListener): () => void;
   clear(): void;
   delete(key: keyof T): void;
   set(key: keyof T, value: T[keyof T]): any;
-  get(key: keyof T): T[keyof T] | { [key: string]: string };
+  get(key: keyof T): T[keyof T] | null;
   keys(): (keyof T)[];
   has(key: keyof T): boolean;
   serializeKey(key: keyof T): serializeKeys<T>;
