@@ -6,7 +6,7 @@ import {
   comparator,
 } from './types';
 
-class Cache<T> implements CacheInterface<T> {
+class Cache<T = Record<string, any>> implements CacheInterface<T> {
   private _cache: Map<string, T[keyof T]>;
   private _listeners: cacheListener[];
   private _comparator: comparator<T>;
@@ -76,10 +76,7 @@ class Cache<T> implements CacheInterface<T> {
     const [serializedKey] = this.serializeKey(key);
     const hitData = this._cache.get(serializedKey as string);
     if (!hitData) {
-      const [serializedKey, errorKey] = this.serializeKey(key);
-      return {
-        [serializedKey]: errorKey,
-      };
+      return null;
     }
     return hitData;
   }

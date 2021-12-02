@@ -1,14 +1,6 @@
 import Cache from '../src/Cache';
 
-interface User {
-  id: number;
-  name: string;
-}
-
-interface CacheProps {
-  user: User;
-  users: User[];
-}
+type CacheProps = Record<string, any>
 
 describe('Cache Test', () => {
   it('comparator', () => {
@@ -20,19 +12,14 @@ describe('Cache Test', () => {
       return true;
     };
     const initialData = { foo: 3 };
-    // @ts-ignore
     const cache = new Cache<CacheProps>({ initialData, comparator });
     cache.set('user', { id: 1, name: 'seolhun' });
-    // @ts-ignore
     cache.set('foo', 4);
     expect(cache.get('user')).toEqual({ id: 1, name: 'seolhun' });
-    // @ts-ignore
     expect(cache.get('foo')).toEqual(4);
     cache.set('user', { id: 1, name: 'seolhun' });
-    // @ts-ignore
     cache.set('foo', 5);
     expect(cache.get('user')).toEqual({ id: 1, name: 'seolhun' });
-    // @ts-ignore
     expect(cache.get('foo')).toEqual(4);
   });
 
@@ -91,8 +78,7 @@ describe('Cache Test', () => {
 
   it('get(): No cache key', () => {
     const cache = new Cache<CacheProps>();
-    // @ts-ignore
-    expect(cache.get('foo')).toEqual({ foo: 'error@foo' });
+    expect(cache.get('foo')).toEqual(null);
   });
 
   it('keys()', () => {
@@ -113,14 +99,12 @@ describe('Cache Test', () => {
     });
     expect(cache.has('user')).toEqual(true);
     expect(cache.has('users')).toEqual(false);
-    // @ts-ignore
     expect(cache.has('fdsa')).toEqual(false);
   });
 
   it('serializeKey()', () => {
     const cache = new Cache<CacheProps>();
     expect(cache.serializeKey('user')).toEqual(['user', 'error@user']);
-    // @ts-ignore
     expect(cache.serializeKey('foo')).toEqual(['foo', 'error@foo']);
   });
 });
