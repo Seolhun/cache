@@ -39,13 +39,6 @@
     "url": "https://github.com/Seolhun/cache/issues"
   },
   "homepage": "https://github.com/Seolhun/cache#readme",
-  "lint-staged": {
-    "*.{ts,tsx}": [
-      "npm run lint:fix",
-      "npm run format",
-      "git add"
-    ]
-  },
   "devDependencies": {
     "@types/jest": "^27.0.2",
     "@types/node": "^17.0.1",
@@ -53,7 +46,6 @@
     "@typescript-eslint/parser": "^4.29.2",
     "eslint": "^7.32.0",
     "jest": "^26.6.3",
-    "node-notifier": ">=8.0.1",
     "prettier": "^2.3.2",
     "ts-jest": "^26.5.6",
     "typescript": "^4.3.5"
