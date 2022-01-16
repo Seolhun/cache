@@ -2,11 +2,7 @@ module.exports = {
   preset: 'ts-jest',
   globals: {
     'ts-jest': {
-      tsConfig: 'tsconfig.json',
-      diagnostics: {
-        pathRegex: /\.(spec|test)\.ts?(x)$/,
-        warnOnly: true,
-      },
+      tsconfig: 'tsconfig.json',
     },
   },
   transform: {
