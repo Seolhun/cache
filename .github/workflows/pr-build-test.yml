@@ -2,8 +2,10 @@ name: PR Build
 
 on:
   pull_request:
-    branches: [master, develop, /^release/.*$/, /^feature/.*$/, /^hotfix/.*$/]
-    types: [opened]
+    branches: [main, develop, /^release/.*$/, /^feature/.*$/, /^bugfix/.*$/, /^hotfix/.*$/, /^support/.*$/]
+    types: [opened, synchronize, reopened]
+    paths-ignore:
+      - '**/*.md'
 
 jobs:
   build:
