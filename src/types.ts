@@ -1,22 +1,22 @@
 export type cacheListener = () => void;
-export type serializeKey<T> = keyof T | string;
-export type serializeKeys<T> = [serializeKey<T>, string];
+export type serializeKey = string;
+export type serializeKeys = [serializeKey, string];
 
-export type comparator<T> = (
-  key: keyof T,
-  prevValue?: T[keyof T],
-  nextValue?: T[keyof T],
+export type comparator<Value> = (
+  key: string,
+  prevValue?: Value,
+  nextValue?: Value,
 ) => boolean;
 
-export interface CacheInterface<T = Record<string, any>> {
+export interface CacheInterface<Value> {
   subscribe(listener: cacheListener): () => void;
   clear(): void;
-  delete(key: keyof T): void;
-  set(key: keyof T, value: T[keyof T]): any;
-  get(key: keyof T): T[keyof T] | null;
-  keys(): (keyof T)[];
-  has(key: keyof T): boolean;
-  serializeKey(key: keyof T): serializeKeys<T>;
+  delete(key: string): void;
+  set(key: string, value: Value): this;
+  get(key: string): Value | null;
+  keys(): (string)[];
+  has(key: string): boolean;
+  serializeKey(key: string): serializeKeys;
 }
 
 export interface CacheConstructorInterface<T> {

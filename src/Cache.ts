@@ -6,13 +6,13 @@ import {
   comparator,
 } from './types';
 
-class Cache<T = Record<string, any>> implements CacheInterface<T> {
-  private _cache: Map<string, T[keyof T]>;
+class Cache<Value> implements CacheInterface<Value> {
+  private _cache: Map<string, Value>;
   private _listeners: cacheListener[];
-  private _comparator: comparator<T>;
+  private _comparator: comparator<Value>;
 
-  constructor(props: CacheConstructorInterface<T> = {}) {
-    this._cache = new Map(Object.entries<T[keyof T]>(props.initialData || {}));
+  constructor(props: CacheConstructorInterface<Value> = {}) {
+    this._cache = new Map(Object.entries<Value>(props.initialData || {}));
     this._listeners = props.listeners ? props.listeners : [];
     this._comparator = props.comparator ? props.comparator : () => true;
   }
@@ -21,7 +21,7 @@ class Cache<T = Record<string, any>> implements CacheInterface<T> {
     await Promise.all(this._listeners.map(async (listener) => await listener()));
   }
 
-  serializeKey(key: keyof T): serializeKeys<T> {
+  serializeKey(key: string): serializeKeys {
     const serializedKey = key;
     const errorKey = serializedKey ? 'error@' + serializedKey : '';
     return [serializedKey, errorKey];
@@ -54,14 +54,14 @@ class Cache<T = Record<string, any>> implements CacheInterface<T> {
     return this;
   }
 
-  delete(key: keyof T) {
+  delete(key: string) {
     const [serializedKey] = this.serializeKey(key);
     this._cache.delete(serializedKey as string);
     this.notify();
     return this;
   }
 
-  set(key: keyof T, value: T[keyof T]): any {
+  set(key: string, value: Value): this {
     const [serializedKey] = this.serializeKey(key);
     const prevValue = this._cache.get(serializedKey as string);
     const nextValue = value;
@@ -72,7 +72,7 @@ class Cache<T = Record<string, any>> implements CacheInterface<T> {
     return this;
   }
 
-  get(key: keyof T) {
+  get(key: string) {
     const [serializedKey] = this.serializeKey(key);
     const hitData = this._cache.get(serializedKey as string);
     if (!hitData) {
@@ -82,10 +82,10 @@ class Cache<T = Record<string, any>> implements CacheInterface<T> {
   }
 
   keys() {
-    return Array.from(this._cache.keys()) as (keyof T)[];
+    return Array.from(this._cache.keys()) as (string)[];
   }
 
-  has(key: keyof T) {
+  has(key: string) {
     const [serializedKey] = this.serializeKey(key);
     return this._cache.has(serializedKey as string);
   }
