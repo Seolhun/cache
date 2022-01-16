@@ -10,7 +10,7 @@ updates:
       time: '11:00'
       timezone: Asia/Seoul
     open-pull-requests-limit: 5
-    target-branch: master
+    target-branch: develop
     reviewers:
       - "Seolhun"
     labels:
