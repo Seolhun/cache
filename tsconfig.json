@@ -2,10 +2,10 @@
   "compilerOptions": {
     "target": "ES2015",
     "module": "ESNext",
-    "lib": ["DOM", "ES2015", "ES2016", "ES2017", "ESNext"],
+    "lib": ["ES2015", "ES2016", "ESNext"],
     "moduleResolution": "Node",
+    "types": ["node", "jest"],
     "jsx": "react",
-    "types": ["node"],
     /* Declaration Options */
     "declaration": true,
     /* Compile options */
@@ -43,15 +43,17 @@
     "pretty": true, // 에러 메시지를 예쁘게 설정
     "noEmitOnError": false, // noEmit 될 경우 에러
     "sourceMap": false,
-
     "outDir": "dist",
-    // "rootDir": ".",
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"],
-      "@public/*": ["public/*"]
-    },
-    "typeRoots": ["./node_modules/@types", "./@types"]
+    "typeRoots": [
+			"./node_modules/@types",
+			"./@types"
+		]
   },
-  "exclude": ["node_modules/**", "dist/**", "test/**", "examples"]
+	"include": [
+		"src"
+	],
+  "exclude": [
+		"node_modules",
+		"test"
+	]
 }

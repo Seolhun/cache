@@ -25,9 +25,11 @@ describe('Cache Test', () => {
 
   it('subscribe(): listener is not a function', () => {
     const cache = new Cache<cacheValueType>();
-    try {
+		try {
+			// @ts-ignore
       cache.subscribe(null);
-    } catch (error) {
+		} catch (error) {
+			// @ts-ignore
       expect(error.message).toEqual('Expected the listener to be a function.');
     }
   });
