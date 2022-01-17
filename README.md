@@ -22,15 +22,15 @@ import Cache from '@seolhun/cache';
 ## Configuration props
 
 ```ts
-export interface CacheInterface<T> {
+export interface CacheInterface<Value> {
   subscribe(listener: cacheListener): () => void;
   clear(): void;
-  delete(key: keyof T): void;
-  set(key: keyof T, value: T[keyof T]): any;
-  get(key: keyof T): T[keyof T] | { [key: string]: string };
-  keys(): (keyof T)[];
-  has(key: keyof T): boolean;
-  serializeKey(key: keyof T): serializeKeys<T>;
+  delete(key: string): void;
+  set(key: string, value: Value): this;
+  get(key: string): Value | null;
+  keys(): (string)[];
+  has(key: string): boolean;
+  serializeKey(key: string): serializeKeys;
 }
 
 export interface CacheConstructorInterface<T> {
