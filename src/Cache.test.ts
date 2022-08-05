@@ -1,6 +1,6 @@
-import Cache from '../src/Cache';
+import Cache from './Cache';
 
-type cacheValueType = any
+type CacheValueType = any;
 
 describe('Cache Test', () => {
   it('comparator', () => {
@@ -12,7 +12,7 @@ describe('Cache Test', () => {
       return true;
     };
     const initialData = { foo: 3 };
-    const cache = new Cache<cacheValueType>({ initialData, comparator });
+    const cache = new Cache<CacheValueType>({ initialData, comparator });
     cache.set('user', { id: 1, name: 'seolhun' });
     cache.set('foo', 4);
     expect(cache.get('user')).toEqual({ id: 1, name: 'seolhun' });
@@ -24,18 +24,18 @@ describe('Cache Test', () => {
   });
 
   it('subscribe(): listener is not a function', () => {
-    const cache = new Cache<cacheValueType>();
-		try {
-			// @ts-ignore
+    const cache = new Cache<CacheValueType>();
+    try {
+      // @ts-ignore
       cache.subscribe(null);
-		} catch (error) {
-			// @ts-ignore
+    } catch (error) {
+      // @ts-ignore
       expect(error.message).toEqual('Expected the listener to be a function.');
     }
   });
 
   it('notify(): after set subscribe, log test', () => {
-    const cache = new Cache<cacheValueType>();
+    const cache = new Cache<CacheValueType>();
     let subscribeOutput = 0;
     const subscribe = () => subscribeOutput++;
     cache.subscribe(subscribe);
@@ -51,7 +51,7 @@ describe('Cache Test', () => {
   });
 
   it('clear()', () => {
-    const cache = new Cache<cacheValueType>();
+    const cache = new Cache<CacheValueType>();
     cache.set('user', {
       id: 1,
       name: 'hun',
@@ -60,7 +60,7 @@ describe('Cache Test', () => {
   });
 
   it('delete', () => {
-    const cache = new Cache<cacheValueType>();
+    const cache = new Cache<CacheValueType>();
     cache.set('user', {
       id: 1,
       name: 'hun',
@@ -70,7 +70,7 @@ describe('Cache Test', () => {
   });
 
   it('set() - get()', () => {
-    const cache = new Cache<cacheValueType>();
+    const cache = new Cache<CacheValueType>();
     cache.set('user', {
       id: 1,
       name: 'hun',
@@ -79,12 +79,12 @@ describe('Cache Test', () => {
   });
 
   it('get(): No cache key', () => {
-    const cache = new Cache<cacheValueType>();
+    const cache = new Cache<CacheValueType>();
     expect(cache.get('foo')).toEqual(null);
   });
 
   it('keys()', () => {
-    const cache = new Cache<cacheValueType>();
+    const cache = new Cache<CacheValueType>();
     expect(cache.keys()).toEqual([]);
     cache.set('user', {
       id: 1,
@@ -94,7 +94,7 @@ describe('Cache Test', () => {
   });
 
   it('has()', () => {
-    const cache = new Cache<cacheValueType>();
+    const cache = new Cache<CacheValueType>();
     cache.set('user', {
       id: 1,
       name: 'hun',
@@ -105,7 +105,7 @@ describe('Cache Test', () => {
   });
 
   it('serializeKey()', () => {
-    const cache = new Cache<cacheValueType>();
+    const cache = new Cache<CacheValueType>();
     expect(cache.serializeKey('user')).toEqual(['user', 'error@user']);
     expect(cache.serializeKey('foo')).toEqual(['foo', 'error@foo']);
   });

@@ -50,10 +50,12 @@
 		]
   },
 	"include": [
-		"src"
+		"src",
 	],
-  "exclude": [
-		"node_modules",
-		"test"
+	"exclude": [
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/*.test.ts",
+    "**/*.test.tsx",
 	]
 }
