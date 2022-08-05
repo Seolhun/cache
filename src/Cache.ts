@@ -6,14 +6,14 @@ import {
 } from './Cache.types';
 import Observable, { ObservableListener } from './Observable';
 
-class Cache<Value> implements CacheInterface<Value> {
+class Cache<T> implements CacheInterface {
   private _observable: Observable;
-  private _cache: Map<string, Value>;
-  private _comparator: comparator<Value>;
+  private _cache: Map<string, any>;
+  private _comparator: comparator;
 
-  constructor(props: CacheConstructorInterface<Value> = {}) {
+  constructor(props: CacheConstructorInterface<T> = {}) {
     this._observable = new Observable(props.listeners);
-    this._cache = new Map(Object.entries<Value>(props.initialData || {}));
+    this._cache = new Map(Object.entries<T>(props.initialData || {}));
     this._comparator = props.comparator ? props.comparator : () => true;
   }
 
@@ -35,17 +35,17 @@ class Cache<Value> implements CacheInterface<Value> {
 
   delete(key: string) {
     const [serializedKey] = this.serializeKey(key);
-    this._cache.delete(serializedKey as string);
+    this._cache.delete(serializedKey);
     this._observable.notify();
     return this;
   }
 
-  set(key: string, value: Value): this {
+  set(key: string, value: any): this {
     const [serializedKey] = this.serializeKey(key);
-    const prevValue = this._cache.get(serializedKey as string);
+    const prevValue = this._cache.get(serializedKey);
     const nextValue = value;
     if (this._comparator(key, prevValue, nextValue)) {
-      this._cache.set(serializedKey as string, value);
+      this._cache.set(serializedKey, value);
       this._observable.notify();
     }
     return this;
@@ -53,7 +53,7 @@ class Cache<Value> implements CacheInterface<Value> {
 
   get(key: string) {
     const [serializedKey] = this.serializeKey(key);
-    const hitData = this._cache.get(serializedKey as string);
+    const hitData = this._cache.get(serializedKey);
     if (!hitData) {
       return null;
     }
@@ -61,12 +61,12 @@ class Cache<Value> implements CacheInterface<Value> {
   }
 
   keys() {
-    return Array.from(this._cache.keys()) as string[];
+    return Array.from(this._cache.keys());
   }
 
   has(key: string) {
     const [serializedKey] = this.serializeKey(key);
-    return this._cache.has(serializedKey as string);
+    return this._cache.has(serializedKey);
   }
 }
 
