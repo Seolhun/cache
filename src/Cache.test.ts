@@ -23,31 +23,20 @@ describe('Cache Test', () => {
     expect(cache.get('foo')).toEqual(4);
   });
 
-  it('subscribe(): listener is not a function', () => {
-    const cache = new Cache<CacheValueType>();
-    try {
-      // @ts-ignore
-      cache.subscribe(null);
-    } catch (error) {
-      // @ts-ignore
-      expect(error.message).toEqual('Expected the listener to be a function.');
-    }
-  });
-
   it('notify(): after set subscribe, log test', () => {
     const cache = new Cache<CacheValueType>();
-    let subscribeOutput = 0;
-    const subscribe = () => subscribeOutput++;
-    cache.subscribe(subscribe);
+    const listener = jest.fn();
+    cache.subscribe(listener);
+
     cache.set('user', {
       id: 1,
       name: 'hun',
     });
-    expect(subscribeOutput).toEqual(1);
+    expect(listener).toBeCalledTimes(1);
     cache.delete('user');
-    expect(subscribeOutput).toEqual(2);
+    expect(listener).toBeCalledTimes(2);
     cache.clear();
-    expect(subscribeOutput).toEqual(3);
+    expect(listener).toBeCalledTimes(3);
   });
 
   it('clear()', () => {

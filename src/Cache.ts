@@ -1,24 +1,24 @@
 import {
   CacheInterface,
   CacheConstructorInterface,
-  cacheListener,
   serializeKeys,
   comparator,
-} from './types';
+} from './Cache.types';
+import Observable, { ObservableListener } from './Observable';
 
 class Cache<Value> implements CacheInterface<Value> {
+  private _observable: Observable;
   private _cache: Map<string, Value>;
-  private _listeners: cacheListener[];
   private _comparator: comparator<Value>;
 
   constructor(props: CacheConstructorInterface<Value> = {}) {
+    this._observable = new Observable(props.listeners);
     this._cache = new Map(Object.entries<Value>(props.initialData || {}));
-    this._listeners = props.listeners ? props.listeners : [];
     this._comparator = props.comparator ? props.comparator : () => true;
   }
 
-  private async notify() {
-    await Promise.all(this._listeners.map(async (listener) => await listener()));
+  subscribe(listener: ObservableListener) {
+    return this._observable.subscribe(listener);
   }
 
   serializeKey(key: string): serializeKeys {
@@ -27,37 +27,16 @@ class Cache<Value> implements CacheInterface<Value> {
     return [serializedKey, errorKey];
   }
 
-  subscribe(listener: cacheListener) {
-    if (typeof listener !== 'function') {
-      throw new Error('Expected the listener to be a function.');
-    }
-
-    let isSubscribed = true;
-    this._listeners.push(listener);
-
-    return () => {
-      if (!isSubscribed) {
-        return;
-      }
-      isSubscribed = false;
-      const index = this._listeners.indexOf(listener);
-      if (index > -1) {
-        this._listeners[index] = this._listeners[this._listeners.length - 1];
-        this._listeners.length--;
-      }
-    };
-  }
-
   clear() {
     this._cache.clear();
-    this.notify();
+    this._observable.notify();
     return this;
   }
 
   delete(key: string) {
     const [serializedKey] = this.serializeKey(key);
     this._cache.delete(serializedKey as string);
-    this.notify();
+    this._observable.notify();
     return this;
   }
 
@@ -67,7 +46,7 @@ class Cache<Value> implements CacheInterface<Value> {
     const nextValue = value;
     if (this._comparator(key, prevValue, nextValue)) {
       this._cache.set(serializedKey as string, value);
-      this.notify();
+      this._observable.notify();
     }
     return this;
   }
@@ -82,7 +61,7 @@ class Cache<Value> implements CacheInterface<Value> {
   }
 
   keys() {
-    return Array.from(this._cache.keys()) as (string)[];
+    return Array.from(this._cache.keys()) as string[];
   }
 
   has(key: string) {
