@@ -44,7 +44,7 @@ class Cache<T> implements CacheInterface {
     const [serializedKey] = this.serializeKey(key);
     const prevValue = this._cache.get(serializedKey);
     const nextValue = value;
-		if (!this._comparator(key, prevValue, nextValue)) {
+    if (!this._comparator(key, prevValue, nextValue)) {
       this._cache.set(serializedKey, value);
       this._emitter.emit('set', { key, value });
     }
