@@ -1,27 +1,27 @@
 import {
   CacheInterface,
   CacheConstructorInterface,
-  serializeKeys,
-  comparator,
+  SerializeKeys,
+  Comparator,
 } from './Cache.types';
-import Observable, { ObservableListener } from './Observable';
+import { EventEmitter, EventEmitterListener } from './EventEmitter';
 
 class Cache<T> implements CacheInterface {
-  private _observable: Observable;
+  private _emitter: EventEmitter<any>;
   private _cache: Map<string, any>;
-  private _comparator: comparator;
+  private _comparator: Comparator;
 
   constructor(props: CacheConstructorInterface<T> = {}) {
-    this._observable = new Observable(props.listeners);
+    this._emitter = new EventEmitter();
     this._cache = new Map(Object.entries<T>(props.initialData || {}));
-    this._comparator = props.comparator ? props.comparator : () => true;
+    this._comparator = props.comparator ? props.comparator : (_key, prev, next) => prev === next;
   }
 
-  subscribe(listener: ObservableListener) {
-    return this._observable.subscribe(listener);
+  subscribe(event: string, listener: EventEmitterListener) {
+    return this._emitter.subscribe(event, listener);
   }
 
-  serializeKey(key: string): serializeKeys {
+  serializeKey(key: string): SerializeKeys {
     const serializedKey = key;
     const errorKey = serializedKey ? 'error@' + serializedKey : '';
     return [serializedKey, errorKey];
@@ -29,14 +29,14 @@ class Cache<T> implements CacheInterface {
 
   clear() {
     this._cache.clear();
-    this._observable.notify();
+    this._emitter.emit('clear', null);
     return this;
   }
 
   delete(key: string) {
     const [serializedKey] = this.serializeKey(key);
     this._cache.delete(serializedKey);
-    this._observable.notify();
+    this._emitter.emit('delete', { key });
     return this;
   }
 
@@ -44,9 +44,9 @@ class Cache<T> implements CacheInterface {
     const [serializedKey] = this.serializeKey(key);
     const prevValue = this._cache.get(serializedKey);
     const nextValue = value;
-    if (this._comparator(key, prevValue, nextValue)) {
+		if (!this._comparator(key, prevValue, nextValue)) {
       this._cache.set(serializedKey, value);
-      this._observable.notify();
+      this._emitter.emit('set', { key, value });
     }
     return this;
   }

@@ -1,101 +1,101 @@
 import Cache from './Cache';
 
-type CacheValueType = any;
+describe('Cache', () => {
+  let cache: Cache<any>;
 
-describe('Cache Test', () => {
-  it('comparator', () => {
-    const comparator = (key, prevValue, nextValue) => {
-      if (key === 'foo') {
-        const hit = prevValue !== 4 && prevValue !== nextValue;
-        return hit;
-      }
-      return true;
-    };
-    const initialData = { foo: 3 };
-    const cache = new Cache<CacheValueType>({ initialData, comparator });
-    cache.set('user', { id: 1, name: 'seolhun' });
-    cache.set('foo', 4);
-    expect(cache.get('user')).toEqual({ id: 1, name: 'seolhun' });
-    expect(cache.get('foo')).toEqual(4);
-    cache.set('user', { id: 1, name: 'seolhun' });
-    cache.set('foo', 5);
-    expect(cache.get('user')).toEqual({ id: 1, name: 'seolhun' });
-    expect(cache.get('foo')).toEqual(4);
+  beforeEach(() => {
+    cache = new Cache();
   });
 
-  it('notify(): after set subscribe, log test', () => {
-    const cache = new Cache<CacheValueType>();
-    const listener = jest.fn();
-    cache.subscribe(listener);
-
-    cache.set('user', {
-      id: 1,
-      name: 'hun',
+  describe('set', () => {
+    it('should set the value for the given key', () => {
+      cache.set('foo', 'bar');
+      expect(cache.get('foo')).toEqual('bar');
     });
-    expect(listener).toBeCalledTimes(1);
-    cache.delete('user');
-    expect(listener).toBeCalledTimes(2);
-    cache.clear();
-    expect(listener).toBeCalledTimes(3);
-  });
 
-  it('clear()', () => {
-    const cache = new Cache<CacheValueType>();
-    cache.set('user', {
-      id: 1,
-      name: 'hun',
+    it('should emit "set" event with key and value', () => {
+      const listener = jest.fn();
+      cache.subscribe('set', listener);
+
+      cache.set('foo', 'bar');
+
+      expect(listener).toHaveBeenCalledWith({ key: 'foo', value: 'bar' });
     });
-    expect(cache.clear().keys()).toEqual([]);
-  });
 
-  it('delete', () => {
-    const cache = new Cache<CacheValueType>();
-    cache.set('user', {
-      id: 1,
-      name: 'hun',
+    it('should not emit "set" event if value is the same', () => {
+      const listener = jest.fn();
+      cache.subscribe('set', listener);
+
+      cache.set('foo', 'bar');
+      cache.set('foo', 'bar');
+
+      expect(listener).toHaveBeenCalledTimes(1);
     });
-    cache.set('users', []);
-    expect(cache.delete('user').keys()).toEqual(['users']);
   });
 
-  it('set() - get()', () => {
-    const cache = new Cache<CacheValueType>();
-    cache.set('user', {
-      id: 1,
-      name: 'hun',
+  describe('get', () => {
+    it('should return the value for the given key', () => {
+      cache.set('foo', 'bar');
+      expect(cache.get('foo')).toEqual('bar');
     });
-    expect(cache.get('user')).toEqual({ id: 1, name: 'hun' });
-  });
 
-  it('get(): No cache key', () => {
-    const cache = new Cache<CacheValueType>();
-    expect(cache.get('foo')).toEqual(null);
-  });
-
-  it('keys()', () => {
-    const cache = new Cache<CacheValueType>();
-    expect(cache.keys()).toEqual([]);
-    cache.set('user', {
-      id: 1,
-      name: 'hun',
+    it('should return null if the key is not found', () => {
+      expect(cache.get('foo')).toBeNull();
     });
-    expect(cache.keys()).toEqual(['user']);
   });
 
-  it('has()', () => {
-    const cache = new Cache<CacheValueType>();
-    cache.set('user', {
-      id: 1,
-      name: 'hun',
+  describe('delete', () => {
+    it('should delete the value for the given key', () => {
+      cache.set('foo', 'bar');
+      cache.delete('foo');
+      expect(cache.get('foo')).toBeNull();
     });
-    expect(cache.has('user')).toEqual(true);
-    expect(cache.has('users')).toEqual(false);
-    expect(cache.has('fdsa')).toEqual(false);
+
+    it('should emit "delete" event with key', () => {
+      const listener = jest.fn();
+      cache.subscribe('delete', listener);
+
+      cache.delete('foo');
+
+      expect(listener).toHaveBeenCalledWith({ key: 'foo' });
+    });
   });
 
-  it('serializeKey()', () => {
-    const cache = new Cache<CacheValueType>();
-    expect(cache.serializeKey('user')).toEqual(['user', 'error@user']);
-    expect(cache.serializeKey('foo')).toEqual(['foo', 'error@foo']);
+  describe('clear', () => {
+    it('should clear all values', () => {
+      cache.set('foo', 'bar');
+      cache.set('baz', 'qux');
+      cache.clear();
+      expect(cache.get('foo')).toBeNull();
+      expect(cache.get('baz')).toBeNull();
+    });
+
+    it('should emit "clear" event', () => {
+      const listener = jest.fn();
+      cache.subscribe('clear', listener);
+
+      cache.clear();
+
+      expect(listener).toHaveBeenCalledWith(null);
+    });
+  });
+
+  describe('has', () => {
+    it('should return true if the key exists', () => {
+      cache.set('foo', 'bar');
+      expect(cache.has('foo')).toBe(true);
+    });
+
+    it('should return false if the key does not exist', () => {
+      expect(cache.has('foo')).toBe(false);
+    });
+  });
+
+  describe('keys', () => {
+    it('should return an array of keys', () => {
+      cache.set('foo', 'bar');
+      cache.set('baz', 'qux');
+      expect(cache.keys()).toEqual(['foo', 'baz']);
+    });
   });
 });
