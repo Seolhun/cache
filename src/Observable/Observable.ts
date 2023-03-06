@@ -26,7 +26,6 @@ class Observable implements ObservableInterface {
     let isSubscribed = true;
     this.addEventListener(listener);
 
-    // Teardown
     return () => {
       if (!isSubscribed) {
         return;
