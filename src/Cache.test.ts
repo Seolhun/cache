@@ -1,4 +1,4 @@
-import Cache from './Cache';
+import { Cache } from './Cache';
 
 describe('Cache', () => {
   let cache: Cache<any>;

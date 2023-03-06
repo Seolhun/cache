@@ -1,80 +1,76 @@
-import { Cache } from './Cache';
-import { Node } from './LRUCache.types';
+import { CacheInterface } from './Cache.types';
+import { LRUCacheConstructorInterface } from './LRUCache.types';
+import { AbstractCache } from './AbstractCache';
 
-export class LRUCache<T> extends Cache<T> {
-  private capacity: number;
-  private head: Node | null;
-  private tail: Node | null;
-  private map: Map<string, Node>;
+export class LRUCache<T> extends AbstractCache<T> implements CacheInterface {
+  private _maxSize: number;
 
-  constructor(capacity: number = 500) {
-    super();
-    this.capacity = capacity;
-    this.head = null;
-    this.tail = null;
-    this.map = new Map<string, Node>();
+  constructor(props: LRUCacheConstructorInterface<T> = {}) {
+    super(props);
+    this._maxSize = props.maxSize || Infinity;
   }
 
-  private addNode(node: Node) {
-    node.prev = null;
-    node.next = this.head;
-
-    if (this.head !== null) {
-      this.head.prev = node;
-    } else {
-      this.tail = node;
-    }
-
-    this.head = node;
+  private _evictOldestEntry() {
+    const oldestKey = this._cache.keys().next().value;
+    this.delete(oldestKey);
   }
 
-  private removeNode(node: Node) {
-    if (node.prev !== null) {
-      node.prev.next = node.next;
-    } else {
-      this.head = node.next;
+  clear() {
+    this._cache.clear();
+    this._emitter.emit('clear', null);
+    return this;
+  }
+
+  delete(key: string) {
+    const serializedKey = this.serializeKey(key)[0];
+    const deleted = this._cache.delete(serializedKey);
+    if (deleted) {
+      this._emitter.emit('delete', { key });
+    }
+    return this;
+  }
+
+  set(key: string, value: T) {
+    const serializedKey = this.serializeKey(key)[0];
+    const existingValue = this._cache.get(serializedKey);
+
+    if (!this.has(serializedKey)) {
+      if (this.size() >= this._maxSize) {
+        this._evictOldestEntry();
+      }
     }
 
-    if (node.next !== null) {
-      node.next.prev = node.prev;
-    } else {
-      this.tail = node.prev;
+    this._cache.set(serializedKey, value);
+    if (!this._comparator(key, existingValue, value)) {
+      this._emitter.emit('set', { key, value });
     }
+
+    return this;
   }
 
   get(key: string) {
-    if (!this.map.has(key)) {
-      return null;
+    const serializedKey = this.serializeKey(key)[0];
+    const value = this._cache.get(serializedKey);
+
+    if (this.has(serializedKey)) {
+      // update usage order of cache entries
+      this.delete(serializedKey);
+      this.set(key, value);
     }
 
-    const node = this.map.get(key)!;
-    this.removeNode(node);
-    this.addNode(node);
-
-    return node.value;
+    return value;
   }
 
-  put(key: string, value: any) {
-    if (this.map.has(key)) {
-      const node = this.map.get(key)!;
-      node.value = value;
-      this.removeNode(node);
-      this.addNode(node);
-    } else {
-      const node: Node = {
-        key,
-        value,
-        prev: null,
-        next: null,
-      };
+  keys() {
+    return Array.from(this._cache.keys());
+  }
 
-      if (this.map.size >= this.capacity) {
-        this.map.delete(this.tail!.key);
-        this.removeNode(this.tail!);
-      }
+  has(key: string) {
+    const serializedKey = this.serializeKey(key)[0];
+    return this._cache.has(serializedKey);
+  }
 
-      this.addNode(node);
-      this.map.set(key, node);
-    }
+  size() {
+    return this._cache.size;
   }
 }

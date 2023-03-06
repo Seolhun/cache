@@ -1,32 +1,47 @@
 import { LRUCache } from './LRUCache';
 
 describe('LRUCache', () => {
-  let cache: LRUCache<string>;
+  const cache = new LRUCache<string>({ maxSize: 2 });
 
   beforeEach(() => {
-    cache = new LRUCache<string>(3);
+    cache.clear();
   });
 
-  test('get should return null if key is not in cache', () => {
-    expect(cache.get('A')).toBeNull();
+  test('set/get works correctly', () => {
+    cache.set('key1', 'value1');
+    expect(cache.get('key1')).toEqual('value1');
+
+    cache.set('key2', 'value2');
+    expect(cache.get('key2')).toEqual('value2');
   });
 
-  test('put should add a new item to the cache', () => {
-    cache.put('A', 'Apple');
-    expect(cache.get('A')).toBe('Apple');
+  test('LRU eviction works correctly', () => {
+    cache.set('key1', 'value1');
+    cache.set('key2', 'value2');
+    cache.set('key3', 'value3');
+
+    expect(cache.get('key1')).toBeUndefined();
+    expect(cache.get('key2')).toEqual('value2');
+    expect(cache.get('key3')).toEqual('value3');
   });
 
-  test('put should update an existing item in the cache', () => {
-    cache.put('A', 'Apple');
-    cache.put('A', 'Apricot');
-    expect(cache.get('A')).toBe('Apricot');
+  test('delete works correctly', () => {
+    cache.set('key1', 'value1');
+    cache.set('key2', 'value2');
+
+    cache.delete('key1');
+    expect(cache.get('key1')).toBeUndefined();
+    expect(cache.get('key2')).toEqual('value2');
   });
 
-  test('put should remove the least recently used item if cache is at capacity', () => {
-    cache.put('A', 'Apple');
-    cache.put('B', 'Banana');
-    cache.put('C', 'Cherry');
-    cache.put('D', 'Durian');
-    expect(cache.get('A')).toBeNull();
+  test('emits events correctly', () => {
+    const callback = jest.fn();
+    cache.subscribe('key1', callback);
+
+    cache.set('key1', 'value1');
+    expect(callback).toHaveBeenCalledWith({ key: 'key1', value: 'value1' });
+
+    cache.delete('key1');
+    expect(callback).toHaveBeenCalledWith({ key: 'key1' });
   });
 });
