@@ -1,6 +1,7 @@
+export * from './EventEmitter';
+export * from './Observable';
+
+export * from './AbstractCache';
 export * from './Cache.types';
 export * from './Cache';
-export { default } from './Cache';
-
-export * from './Observable';
-export * from './EventEmitter';
+export * from './LRUCache';

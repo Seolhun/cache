@@ -1,25 +1,14 @@
-import { CacheInterface, CacheConstructorInterface, SerializeKeys, Comparator } from './Cache.types';
-import { EventEmitter, EventEmitterListener } from './EventEmitter';
+import { AbstractCache } from './AbstractCache';
+import { CacheConstructorInterface } from './Cache.types';
+import { EventEmitterListener } from './EventEmitter';
 
-class Cache<T> implements CacheInterface {
-  private _emitter: EventEmitter<any>;
-  private _cache: Map<string, any>;
-  private _comparator: Comparator;
-
-  constructor(props: CacheConstructorInterface<T> = {}) {
-    this._emitter = new EventEmitter();
-    this._cache = new Map(Object.entries<T>(props.initialData || {}));
-    this._comparator = props.comparator ? props.comparator : (_key, prev, next) => prev === next;
+export class Cache<T> extends AbstractCache<T> {
+  constructor(args: CacheConstructorInterface<T> = {}) {
+    super(args);
   }
 
   subscribe(event: string, listener: EventEmitterListener) {
     return this._emitter.subscribe(event, listener);
-  }
-
-  serializeKey(key: string): SerializeKeys {
-    const serializedKey = key;
-    const errorKey = serializedKey ? 'error@' + serializedKey : '';
-    return [serializedKey, errorKey];
   }
 
   clear() {
@@ -63,7 +52,8 @@ class Cache<T> implements CacheInterface {
     const [serializedKey] = this.serializeKey(key);
     return this._cache.has(serializedKey);
   }
-}
 
-export { Cache };
-export default Cache;
+  size() {
+    return this._cache.size;
+  }
+}
