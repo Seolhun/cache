@@ -1,9 +1,4 @@
-import {
-  CacheInterface,
-  CacheConstructorInterface,
-  SerializeKeys,
-  Comparator,
-} from './Cache.types';
+import { CacheInterface, CacheConstructorInterface, SerializeKeys, Comparator } from './Cache.types';
 import { EventEmitter, EventEmitterListener } from './EventEmitter';
 
 class Cache<T> implements CacheInterface {

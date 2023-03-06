@@ -40,14 +40,23 @@
   },
   "homepage": "https://github.com/Seolhun/cache#readme",
   "devDependencies": {
+    "@seolhun/eslint-config": "^1.0.0",
     "@types/jest": "^28.1.6",
     "@types/node": "^18.14.6",
-    "@typescript-eslint/eslint-plugin": "^5.32.0",
-    "@typescript-eslint/parser": "^5.32.0",
-    "eslint": "^8.35.0",
+    "@typescript-eslint/eslint-plugin": "4",
+    "@typescript-eslint/parser": "4",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "8",
+    "eslint-plugin-eslint-plugin": "3",
+    "eslint-plugin-import": "2",
+    "eslint-plugin-jsx-a11y": "6",
+    "eslint-plugin-node": "11",
+    "eslint-plugin-prettier": "3",
+    "eslint-plugin-react": "7",
+    "eslint-plugin-react-hooks": "4",
     "jest": "^28.1.3",
     "prettier": "^2.7.1",
     "ts-jest": "^28.0.7",
-    "typescript": "^4.7.4"
+    "typescript": "^4.9.5"
   }
 }
