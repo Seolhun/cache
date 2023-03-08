@@ -25,7 +25,7 @@ export class LRUCache<T> extends AbstractCache<T> implements CacheInterface {
     const serializedKey = this.serializeKey(key)[0];
     const deleted = this._cache.delete(serializedKey);
     if (deleted) {
-      this._emitter.emit('delete', { key });
+      this._emitter.emit('delete', { key: serializedKey });
     }
     return this;
   }
@@ -41,8 +41,8 @@ export class LRUCache<T> extends AbstractCache<T> implements CacheInterface {
     }
 
     this._cache.set(serializedKey, value);
-    if (!this._comparator(key, existingValue, value)) {
-      this._emitter.emit('set', { key, value });
+    if (!this._comparator(serializedKey, existingValue, value)) {
+      this._emitter.emit('set', { key: serializedKey, value });
     }
 
     return this;
@@ -55,7 +55,7 @@ export class LRUCache<T> extends AbstractCache<T> implements CacheInterface {
     if (this.has(serializedKey)) {
       // update usage order of cache entries
       this.delete(serializedKey);
-      this.set(key, value);
+      this.set(serializedKey, value);
     }
 
     return value;
