@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES5",
     "module": "CommonJS",
-    "lib": ["ES2015"],
+    "lib": ["ES2015", "ES2016", "ESNext"],
     "moduleResolution": "Node",
     "types": ["node", "jest"],
     "jsx": "react",
@@ -36,6 +36,8 @@
     "strictPropertyInitialization": true,
     "suppressExcessPropertyErrors": false, // 객체 리터럴에 대한 초과 속성 검사 억제 여부
     "suppressImplicitAnyIndexErrors": false, // 인덱스 서명이없는 개체를 인덱싱하는 경우 --noImplicitAny 오류 억제여부
+    /* TO support ES5 */
+		"downlevelIteration": true,
     /* Debugging Options */
     "traceResolution": false, // 모듈 검색에 대한 로그메세지 출력 여부
     "listEmittedFiles": false, // 컴파일된 결과 파일들 이름을 터미널에 출력
