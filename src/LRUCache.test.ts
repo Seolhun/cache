@@ -35,13 +35,14 @@ describe('LRUCache', () => {
   });
 
   test('emits events correctly', () => {
-    const callback = jest.fn();
-    cache.subscribe('key1', callback);
-
+    const setCallback = jest.fn();
+    cache.subscribe('set', setCallback);
     cache.set('key1', 'value1');
-    expect(callback).toHaveBeenCalledWith({ key: 'key1', value: 'value1' });
+    expect(setCallback).toHaveBeenCalledWith({ key: 'key1', value: 'value1' });
 
+    const deleteCallback = jest.fn();
+    cache.subscribe('delete', deleteCallback);
     cache.delete('key1');
-    expect(callback).toHaveBeenCalledWith({ key: 'key1' });
+    expect(deleteCallback).toHaveBeenCalledWith({ key: 'key1' });
   });
 });
