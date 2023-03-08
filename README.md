@@ -16,5 +16,5 @@ npm install @seolhun/cache
 ```
 
 ```ts
-import Cache from '@seolhun/cache';
+import { Cache } from '@seolhun/cache';
 ```
