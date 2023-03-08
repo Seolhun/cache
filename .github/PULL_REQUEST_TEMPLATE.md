@@ -4,11 +4,11 @@
 
 ## Why
 
-> Write the resonable backgrounds about this task.
+> Write a reasonable background about this task.
 
 ## Related issue
 
-> Link related issues
+> Links related issue
 
 ## Additional context
 
