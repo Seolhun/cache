@@ -1,7 +1,7 @@
-export type EventEmitterListener = <Args>(args: Args) => void;
+import { EventEmitterListener, EventEmitterSubscriptionEventMap } from './EventEmitter.types';
 
-export class EventEmitter<Args> {
-  private listeners: Map<string, EventEmitterListener[]> = new Map();
+export class EventEmitter<EventMap extends EventEmitterSubscriptionEventMap> {
+  private listeners: Map<keyof EventMap, EventEmitterListener[]> = new Map();
 
   on(event: string, listener: EventEmitterListener): void {
     const listeners = this.listeners.get(event) || [];
@@ -31,7 +31,7 @@ export class EventEmitter<Args> {
     };
   }
 
-  async emit(event: string, args: Args): Promise<void> {
+  async emit(event: keyof EventMap, args: Parameters<EventMap[keyof EventMap]>): Promise<void> {
     const listeners = this.listeners.get(event) || [];
     await Promise.all(listeners.map((listener) => listener(args)));
   }
