@@ -1,5 +1,5 @@
-export type EventEmitterListener = <Args>(args: Args) => void;
+export type EventEmitterListener = <Args extends unknown[]>(...args: Args) => void;
 
 export interface EventEmitterSubscriptionEventMap {
-  [key: string]: EventEmitterListener;
+  [key: string | number | symbol]: EventEmitterListener;
 }

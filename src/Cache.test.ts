@@ -76,7 +76,7 @@ describe('Cache', () => {
 
       cache.clear();
 
-      expect(listener).toHaveBeenCalledWith(null);
+      expect(listener).toHaveBeenCalledWith();
     });
   });
 

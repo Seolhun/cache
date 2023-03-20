@@ -13,7 +13,7 @@ export class Cache<T> extends AbstractCache<T> {
 
   clear() {
     this._cache.clear();
-    this._emitter.emit('clear', null);
+    this._emitter.emit('clear');
     return this;
   }
 

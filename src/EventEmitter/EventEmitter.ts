@@ -31,8 +31,8 @@ export class EventEmitter<EventMap extends EventEmitterSubscriptionEventMap> {
     };
   }
 
-  async emit(event: keyof EventMap, args: Parameters<EventMap[keyof EventMap]>): Promise<void> {
+  async emit(event: keyof EventMap, ...args: Parameters<EventMap[keyof EventMap]>): Promise<void> {
     const listeners = this.listeners.get(event) || [];
-    await Promise.all(listeners.map((listener) => listener(args)));
+    await Promise.all(listeners.map((listener) => listener(...args)));
   }
 }
